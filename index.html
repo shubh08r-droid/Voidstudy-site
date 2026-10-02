@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID STUDY</title>
+
+<script>
+if (sessionStorage.getItem("appLoaded")) {
+    document.write("<style>#loader, #developerPopup { display: none !important; opacity: 0 !important; visibility: hidden !important; }</style>");
+}
+</script>
+
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+/* 5 Specific Theme Definitions */
+:root, body.theme-void {
+    --bg:#040d16; --bg2:#07121d; --card:#0d1825; --card2:#122031;
+    --text:#ffffff; --muted:#8fa1b8; --blue:#00d2ff; --blue2:#0072ff;
+    --border:rgba(0,210,255,.25); --shadow:rgba(0,0,0,.5);
+}
+body.theme-midnight {
+    --bg:#05030a; --bg2:#0a0614; --card:#120c21; --card2:#1b1230;
+    --text:#ffffff; --muted:#a79bc9; --blue:#a259ff; --blue2:#6c15ff;
+    --border:rgba(162,89,255,.3); --shadow:rgba(0,0,0,.6);
+}
+body.theme-neon {
+    --bg:#020b0e; --bg2:#04141a; --card:#08222b; --card2:#0d313d;
+    --text:#ffffff; --muted:#82c4d8; --blue:#00ffcc; --blue2:#00b894;
+    --border:rgba(0,255,204,.35); --shadow:rgba(0,0,0,.6);
+}
+body.theme-stealth {
+    --bg:#000000; --bg2:#080808; --card:#111111; --card2:#1a1a1a;
+    --text:#e0e0e0; --muted:#757575; --blue:#424242; --blue2:#212121;
+    --border:rgba(255,255,255,.08); --shadow:rgba(0,0,0,.9);
+}
+body.theme-light {
+    --bg:#f0f6ff; --bg2:#e2edfb; --card:#ffffff; --card2:#f4f8ff;
+    --text:#06121f; --muted:#65778f; --blue:#0099ff; --blue2:#0051e8;
+    --border:rgba(0,153,255,.2); --shadow:rgba(30,100,180,.12);
+}
+
+html, body{ width:100%; min-height:100%; }
+body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:var(--text); overflow-x:hidden; transition: background 0.3s ease, color 0.3s ease; }
+
+#loader{ position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center; flex-direction:column; background: radial-gradient(circle at 50% 40%, rgba(0,180,255,.2), transparent 40%), #030a12; transition: opacity .35s ease, visibility .35s ease; }
+#loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.loader-logo-box{ width:185px; height:185px; position:relative; display:flex; align-items:center; justify-content:center; animation: loaderFloat 2.8s ease-in-out infinite; }
+.loader-logo-box::after{ content:""; position:absolute; bottom:-18px; width:120px; height:17px; border-radius:50%; background: rgba(0,210,255,.4); filter:blur(12px); animation: loaderShadow 2.8s ease-in-out infinite; }
+.loader-logo{ width:170px; height:170px; object-fit:contain; border-radius:34px; filter: drop-shadow(0 15px 30px rgba(0,180,255,.35)); }
+.loader-title{ margin-top:30px; font-size:43px; font-weight:900; letter-spacing:-2px; color:white; }
+.loader-title span{ color:#00d2ff; }
+.loader-author{ margin-top:12px; color:#d9e5f3; font-size:18px; }
+.loader-author b{ color:#00d2ff; }
+.loader-loading{ margin-top:60px; font-size:16px; letter-spacing:7px; color:#8fb2d4; }
+.loader-bar{ width:72%; max-width:390px; height:15px; margin-top:20px; border-radius:30px; background:#0d1c2c; border:1px solid #1a3854; overflow:hidden; }
+.loader-progress{ width:0%; height:100%; border-radius:30px; background: linear-gradient(90deg, #0072ff, #00d2ff); box-shadow: 0 0 18px rgba(0,210,255,.8); transition: width 0.05s linear; }
+.loader-percent{ margin-top:13px; font-size:18px; font-weight:bold; color:#a8c8e6; }
+.loader-tagline{ margin-top:65px; font-size:12px; letter-spacing:5px; color:#7894ad; }
+@keyframes loaderFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-14px); } }
+@keyframes loaderShadow{ 0%,100%{ transform:scaleX(1); opacity:.7; } 50%{ transform:scaleX(.65); opacity:.3; } }
+<style>
+#app{ width:100%; min-height:100vh; padding-bottom:40px; }
+.header{ width:100%; padding: 22px 18px 20px; display:flex; align-items:center; justify-content:space-between; background: linear-gradient(180deg, rgba(0,210,255,.12) 0%, transparent 100%), var(--bg); position:relative; z-index:100; }
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand img{ width:58px; height:58px; object-fit:contain; border-radius:18px; filter: drop-shadow(0 0 12px rgba(0,210,255,.4)); }
+.brand-text h1{ font-size:26px; line-height:1; font-weight:900; letter-spacing:-1px; text-shadow: 0 0 15px rgba(0,210,255,.3); color:var(--text); }
+.brand-text h1 span{ color:var(--blue); }
+.brand-text p{ margin-top:7px; font-size:12px; font-weight:bold; letter-spacing:2px; color:var(--blue); }
+
+/* Void Orb Theme Button & Panel Styles */
+.theme-orb-btn { width:52px; height:52px; border-radius:17px; border: 1px solid var(--border); background: radial-gradient(circle, var(--card2), var(--card)); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:24px; cursor:pointer; box-shadow: 0 8px 25px var(--shadow), 0 0 15px rgba(0,210,255,.2); position: relative; }
+
+.theme-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 9998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+.theme-overlay.active { opacity: 1; visibility: visible; }
+
+.theme-panel { position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card); border: 1px solid var(--border); border-top-left-radius: 32px; border-top-right-radius: 32px; padding: 25px 20px 35px; z-index: 9999; box-shadow: 0 -15px 40px rgba(0,0,0,0.8); transition: bottom 0.35s cubic-bezier(0.1, 1, 0.1, 1); box-sizing: border-box; }
+.theme-panel.active { bottom: 0; }
+
+.theme-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.theme-panel-title { font-size: 16px; font-weight: 900; letter-spacing: 2px; color: var(--text); }
+.theme-panel-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+
+.theme-options-list { display: flex; flex-direction: column; gap: 10px; }
+.theme-option-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 18px; background: var(--card2); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s ease; }
+.theme-option-item:hover { border-color: var(--blue); }
+.theme-option-info { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 15px; color: var(--text); }
+.theme-check { color: var(--blue); font-weight: bold; font-size: 16px; opacity: 0; }
+.theme-option-item.selected .theme-check { opacity: 1; }
+
+.container{ width:100%; max-width:720px; margin:auto; padding:18px; }
+.telegram-banner{ width:100%; height:190px; position:relative; overflow:hidden; border-radius:28px; border: 1px solid rgba(0,210,255,.35); background: radial-gradient(circle at 30% 30%, rgba(0,210,255,.2), transparent 70%), linear-gradient(135deg, #0d1a29, #040d16); box-shadow: 0 20px 45px rgba(0,0,0,.4); cursor:pointer; }
+.telegram-banner img{ width:100%; height:100%; object-fit:cover; display:block; }
+.telegram-icon{ position:absolute; top:17px; right:17px; width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; background: #229ed9; color:#ffffff; font-size:25px; box-shadow: 0 8px 25px rgba(0,160,255,.4); }
+.banner-overlay-text { position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; font-size: 14px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.8); padding: 0 10px; }
+.banner-overlay-text span { color: var(--blue); }
+.banner-dot{ width:31px; height:9px; margin: 20px auto 15px; border-radius:20px; background: radial-gradient(circle, var(--blue), var(--blue2)); box-shadow: 0 0 18px var(--blue); }
+.hub-badge{ width:max-content; margin:auto; padding: 11px 19px; border-radius:30px; border: 1px solid var(--border); background: radial-gradient(circle at 50% 50%, rgba(0,210,255,.15), rgba(0,114,255,.05)); color:var(--blue); font-size:15px; font-weight:bold; letter-spacing:2px; box-shadow: 0 0 20px rgba(0,210,255,.15); }
+.hub-badge::before{ content:""; display:inline-block; width:11px; height:11px; margin-right:10px; border-radius:50%; background:var(--blue); box-shadow: 0 0 12px var(--blue); }
+.search-box{ margin-top:28px; width:100%; height:65px; border-radius:32px; border: 1px solid var(--border); background: radial-gradient(circle at 0% 50%, var(--card2), var(--card)); display:flex; align-items:center; padding:0 23px; box-shadow: 0 12px 30px var(--shadow); }
+.search-icon{ font-size:22px; color:var(--muted); margin-right:13px; }
+.search-box input{ width:100%; border:0; outline:0; background:transparent; color:var(--text); font-size:17px; }
+.search-box input::placeholder{ color:var(--muted); }
+.section-title{ margin-top:35px; margin-bottom:15px; font-size:17px; font-weight:900; letter-spacing:2px; color:var(--text); }
+.section-title::after{ content:""; display:block; width:55px; height:4px; margin-top:9px; border-radius:10px; background: linear-gradient(90deg, var(--blue2), var(--blue)); box-shadow: 0 0 10px var(--blue); }
+.platform-list{ display:flex; flex-direction:column; gap:13px; }
+.platform-card{ width:100%; min-height:102px; padding: 15px; display:flex; align-items:center; gap:15px; border-radius:27px; border: 1px solid var(--border); background: radial-gradient(circle at 10% 20%, var(--card2), var(--card)); box-shadow: 0 12px 28px var(--shadow); cursor:pointer; }
+.platform-logo{ width:70px; height:70px; flex-shrink:0; object-fit:cover; border-radius:21px; background:#fff; padding:2px; }
+.platform-info{ flex:1; min-width:0; }
+.platform-name{ font-size:18px; font-weight:900; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.platform-sub{ margin-top:8px; font-size:14px; color:var(--muted); }
+.open-btn{ width:52px; height:52px; flex-shrink:0; border-radius:50%; border: 1px solid rgba(0,210,255,0.35); background: radial-gradient(circle, rgba(0,210,255,0.2), rgba(0,114,255,0.05)); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:27px; box-shadow: 0 0 15px rgba(0,210,255,.2); }
+.developer{ position:fixed; left:50%; bottom:30px; transform:translateX(-50%); z-index:5000; height:46px; padding:0 20px; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:28px; background: radial-gradient(circle at 50% 50%, #102235, #0a1420); border:1px solid var(--border); font-size:13px; font-weight:900; letter-spacing:1px; cursor:pointer; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+.developer.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.developer-label{ color:var(--muted); } .developer-emoji{ font-size:18px; } .developer-name{ color:var(--blue); }
+.no-result{ display:none; text-align:center; padding:40px 10px; color:var(--muted); font-size:15px; }
+</style>
+</head>
+<body class="theme-void">
+
+<div id="loader">
+    <div class="loader-logo-box">
+        <img src="https://plain-apac-prod-public.komododecks.com/202610/02/ogLL3orM29pZQIfX9Jm6/image.png" class="loader-logo" alt="VOID STUDY">
+    </div>
+    <div class="loader-title">VOID <span>STUDY</span></div>
+    <div class="loader-author">by <b>Shubh🗿</b></div>
+    <div class="loader-loading">LOADING...</div>
+    <div class="loader-bar"><div class="loader-progress" id="loaderProgress"></div></div>
+    <div class="loader-percent" id="loaderPercent">0%</div>
+    <div class="loader-tagline">STUDY • LEARN • GROW</div>
+</div>
+
+<div id="app">
+    <header class="header">
+        <div class="brand">
+            <img src="https://plain-apac-prod-public.komododecks.com/202610/02/EjRWvmwxcMhH0rc84yU8/image.png" alt="VOID STUDY">
+            <div class="brand-text">
+                <h1>VOID <span>STUDY</span></h1>
+                <p>STUDY • LEARN • GROW</p>
+            </div>
+        </div>
+        <button class="theme-orb-btn" id="themeOrbBtn" onclick="openThemePanel()">◉</button>
+    </header>
+
+    <main class="container">
+        <div class="telegram-banner" onclick="openTelegram()">
+            <img src="https://plain-apac-prod-public.komododecks.com/202610/02/5j1vUkbshXWMmbokfPUu/image.jpg" alt="Telegram Banner">
+            <div class="telegram-icon">➤</div>
+            <div class="banner-overlay-text"><span>VOID STUDY</span> - All Batches Available Here</div>
+        </div>
+
+        <div class="banner-dot"></div>
+
+        <div class="hub-badge">ULTRA PLATFORM HUB</div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search platforms, notes, features..." oninput="searchPlatforms()">
+        </div>
+
+        <div class="section-title">EXPLORE PLATFORM HUB</div>
+        <div class="platform-list" id="platformList">
+            <div class="platform-card" data-name="KD LIVE" onclick="openSite('https://kd-live.netlify.app/')">
+                <img class="platform-logo" src="https://i.ibb.co/G4NGbBDF/dfb58a9616e725b1d52dd3cff7154f7f-fgraphic.png" alt="KD LIVE">
+                <div class="platform-info"><div class="platform-name">KD LIVE</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PHYSICS WALLAH" onclick="openSite('https://pw.deltaverse.site/study')">
+                <img class="platform-logo" src="https://i.ibb.co/p6xQJn1f/images.png" alt="PHYSICS WALLAH">
+                <div class="platform-info"><div class="platform-name">PHYSICS WALLAH</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="KHAN GLOBAL STUDIES KGS" onclick="openSite('https://darkuniversekgs.vercel.app/')">
+                <img class="platform-logo" src="https://i.ibb.co/m5rjgZ9C/952c9b771b53d250535bbd1b9a31f138.jpg" alt="KGS">
+                <div class="platform-info"><div class="platform-name">KHAN GLOBAL STUDIES [KGS]</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="VIDYAKUL" onclick="openSite('https://vidyakool.streamfiles.eu.org/')">
+                <img class="platform-logo" src="https://i.ibb.co/21yzZJBZ/logotwitter.jpg" alt="VIDYAKUL">
+                <div class="platform-info"><div class="platform-name">VIDYAKUL</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="MISSSONJEET MJ" onclick="openSite('https://mj.streamfiles.eu.org/')">
+                <img class="platform-logo" src="https://i.ibb.co/XrxQpjjz/images-1.png" alt="MJ">
+                <div class="platform-info"><div class="platform-name">MESSSONJEET [MJ]</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="ROJGAR WITH ANKIT RWA" onclick="openSite('https://rwa.studybeepro.site/rwax/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/QaKJL0zAl7LSbYkDrYfk/image.jpg" alt="RWA">
+                <div class="platform-info"><div class="platform-name">ROJGAR WITH ANKIT [RWA]</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="SELECTION WAY" onclick="openSite('https://nexthope.pages.dev/sw/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/jLuOq8IKzpQTiR9Uo3Fy/image.jpg" alt="SELECTION WAY">
+                <div class="platform-info"><div class="platform-name">SELECTION WAY</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="TARGET BOARD" onclick="openSite('https://studyapkmod-targetboard.vercel.app/index.html')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/H8mbx38R4MSBcqaY4GAU/image.png" alt="TARGET BOARD">
+                <div class="platform-info"><div class="platform-name">TARGET BOARD</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="CAREERWILL CW" onclick="openSite('https://studyhelp.freesite.online/batches/cw.html?i=3')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/NHJ0X0EmPR6YBWyrKw8j/image.png" alt="CAREERWILL">
+                <div class="platform-info"><div class="platform-name">CAREERWILL [CW]</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="FUTUREKUL" onclick="openSite('https://nexthope.pages.dev/futurekul/')">
+                <img class="platform-logo" src="https://i.ibb.co/RGd8STy2/unnamed.jpg" alt="FUTUREKUL">
+                <div class="platform-info"><div class="platform-name">FUTUREKUL</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="UNACADEMY OFFLINE" onclick="openSite('https://nexthope.pages.dev/uncoffline/')">
+                <img class="platform-logo" src="https://i.ibb.co/LMJMGx2/unacademy.webp" alt="UNACADEMY">
+                <div class="platform-info"><div class="platform-name">UNACADEMY OFFLINE</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="APNA COLLEGE" onclick="openSite('https://studyapkmod-apnacollege.vercel.app/')">
+                <img class="platform-logo" src="https://i.ibb.co/4ZgxpRzM/0f275b1c30123c908cc8491a86d9146a.png" alt="APNA COLLEGE">
+                <div class="platform-info"><div class="platform-name">APNA COLLEGE</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="TESTBOOK" onclick="openSite('https://ankitprep.silentpreparationhub.workers.dev/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/02/ItpqMgv3QpvD9RD9ai9h/image.png" alt="TESTBOOK">
+                <div class="platform-info"><div class="platform-name">TESTBOOK</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PW BOOK" onclick="openSite('https://books.streamfiles.eu.org/')">
+                <img class="platform-logo" src="https://i.ibb.co/BVn1cdk7/images-2.png" alt="PW BOOK">
+                <div class="platform-info"><div class="platform-name">PW BOOK</div><div class="platform-sub">BOOKS & STUDY</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="VIDYAGRAM" onclick="openSite('https://vidya.studybeepro.site/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/02/m38i4W81wUIsmWMhgqsG/image.webp" alt="VIDYAGRAM">
+                <div class="platform-info"><div class="platform-name">VIDYAGRAM</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="EDUTERIAA" onclick="openSite('https://studyapkmod-eduteria.vercel.app/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/02/vmE02RUET3Dkd41ZlgLt/image.jpg" alt="EDUTERIA">
+                <div class="platform-info"><div class="platform-name">EDUTERIAA</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="VIVID ACADEMY" onclick="openSite('https://vivid-kohl.vercel.app/')">
+                <img class="platform-logo" src="https://i.ibb.co/0yhxqRpF/unnamed-2.png" alt="VIVID">
+                <div class="platform-info"><div class="platform-name">VIVID ACADEMY</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="VOIDPINNACLE E BOOK" onclick="openSite('https://nexthope.pages.dev/pinnacle/')">
+                <img class="platform-logo" src="https://i.ibb.co/s9fHPV9P/favicon-1.png" alt="PINNACLE">
+                <div class="platform-info"><div class="platform-name">VOIDPINNACLE E-BOOK</div><div class="platform-sub">E-BOOK PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PARMAR BATCHES" onclick="openSite('https://tgdoraemon.vercel.app/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/WMJggZZ59XwQKEdf807v/image.jpg" alt="PARMAR">
+                <div class="platform-info"><div class="platform-name">PARMAR BATCHES</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PRO BATCH 2.0 2027" onclick="openSite('https://nexthope.site/mastersahab/content?id=44743&domain=PRO-BATCH-2.0---2027-44743&title=PRO+BATCH+2.0+-+2027-44743')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/MUvJ3IVxZ2i3A2lZWCsK/image.jpg" alt="PRO BATCH">
+                <div class="platform-info"><div class="platform-name">PRO BATCH 2.0 - 2027</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="GS VISION" onclick="openSite('https://nexthope.site/gsvision/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/V8aSouIKcoGavdDJ61hk/image.png" alt="GS VISION">
+                <div class="platform-info"><div class="platform-name">GS VISION</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="MOTION" onclick="openSite('https://others.streamfiles.eu.org/motion/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/F77JUa0EmVfrT9O0NqZG/image.png" alt="MOTION">
+                <div class="platform-info"><div class="platform-name">MOTION</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="ENGLISH BY NEETU SINGH" onclick="openSite('https://yappy-violet-akhjn9fk.edgeone.dev/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/02/XhgjSHMIvblJ0TsZQ76x/image.jpg" alt="NEETU SINGH">
+                <div class="platform-info"><div class="platform-name">ENGLISH BY NEETU SINGH 78</div><div class="platform-sub">ENGLISH PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="RG VIKRAMJEET" onclick="openSite('https://learnbyakp.site/vikaram')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/7UrsJUJPAh8feDKUFxq6/image.png" alt="RG">
+                <div class="platform-info"><div class="platform-name">RG VIKRAMJEET</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="MAGNET BRAINS" onclick="openSite('https://www.magnetbrains.com/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/Ce64B0uXKYF6WBgOjDzs/image.png" alt="MAGNET BRAINS">
+                <div class="platform-info"><div class="platform-name">MAGNET BRAINS</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="SCIENCE AND FUN" onclick="openSite('https://deltastudy.fun/scienceandfun')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/gjDl1L5D5CcJEnFwPrvj/image.jpg" alt="SCIENCE AND FUN">
+                <div class="platform-info"><div class="platform-name">SCIENCE AND FUN</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="JUST PADHLE" onclick="openSite('https://deltastudy.fun/padhle')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/ZiDSlf6GaNvVONdqphMO/image.png" alt="JUST PADHLE">
+                <div class="platform-info"><div class="platform-name">JUST PADHLE</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="MUNIL SIR" onclick="openSite('https://deltastudy.fun/munilsir')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/02/JAfd7MJjOsVG8DT0xFXI/image.jpg" alt="MUNIL SIR">
+                <div class="platform-info"><div class="platform-name">MUNIL SIR</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PHYSICS WALLAH PW 2" onclick="openSite('https://studyxpanda-pw.vercel.app/')">
+                <img class="platform-logo" src="https://i.ibb.co/p6xQJn1f/images.png" alt="PW">
+                <div class="platform-info"><div class="platform-name">PHYSICS WALLAH [PW] 2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="CDS JOURNEY" onclick="openSite('https://cds.streamfiles.eu.org/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/ec0RBXEZEAoPQ1IOev8l/image.jpg" alt="CDS">
+                <div class="platform-info"><div class="platform-name">CDS JOURNEY</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PW BOOKS TEST" onclick="openSite('https://pwxbooks.pages.dev/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/edIPD4WDFCde1MyVqh50/image.png" alt="PW BOOKS">
+                <div class="platform-info"><div class="platform-name">PW BOOKS TEST</div><div class="platform-sub">BOOKS & TEST</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="KHAN GLOBAL STUDIES KGS V2" onclick="openSite('https://vidyaverse-kgs.vercel.app/')">
+                <img class="platform-logo" src="https://i.ibb.co/m5rjgZ9C/952c9b771b53d250535bbd1b9a31f138.jpg" alt="KGS V2">
+                <div class="platform-info"><div class="platform-name">KHAN GLOBAL STUDIES [KGS] V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="STUDY IQ" onclick="openSite('https://studyiqspidy.vercel.app/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/MWFAPrWiLKsNbAI0LIxn/image.png" alt="STUDY IQ">
+                <div class="platform-info"><div class="platform-name">STUDY IQ</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="TARGET BOARD V2" onclick="openSite('https://studybeepro.site/tb/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/H8mbx38R4MSBcqaY4GAU/image.png" alt="TARGET BOARD V2">
+                <div class="platform-info"><div class="platform-name">TARGET BOARD V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="CARRIER WILL V2" onclick="openSite('https://runtkyp.xo.je/?i=3')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/NHJ0X0EmPR6YBWyrKw8j/image.png" alt="CW V2">
+                <div class="platform-info"><div class="platform-name">CARRIER WILL V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PI OTT PRO PW" onclick="openSite('https://pipro.deltastudy.fun/')">
+                <img class="platform-logo" src="https://i.ibb.co/p6xQJn1f/images.png" alt="PI OTT PRO">
+                <div class="platform-info"><div class="platform-name">PI OTT PRO [PW]</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="AASH OFFICIAL SK JHA SIR" onclick="openSite('https://studyapkmod-aash.vercel.app/home')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/F9TkxiDbB4QlgrVxP4Fj/image.png" alt="AASH">
+                <div class="platform-info"><div class="platform-name">AASH OFFICIAL [SK JHA SIR]</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="YES OFFICER" onclick="openSite('https://yesofficerpro.pages.dev/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/SjUo3dCUU1OWYhBz6cPi/image.jpg" alt="YES OFFICER">
+                <div class="platform-info"><div class="platform-name">YESOFFICER</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+        </div>
+        <div class="no-result" id="noResult">No platform found 🔎</div>
+    </main>
+      <div class="developer hide" id="developerPopup" onclick="openTelegram()">
+        <span class="developer-label">DEVELOPER</span>
+        <span class="developer-emoji">🗿</span>
+        <span class="developer-name">SHUBH</span>
+    </div>
+</div>
+<!-- Theme Selection Bottom Sheet Panel -->
+<div class="theme-overlay" id="themeOverlay" onclick="closeThemePanel()"></div>
+<div class="theme-panel" id="themePanel">
+    <div class="theme-panel-header">
+        <div class="theme-panel-title">SELECT ATMOSPHERE</div>
+        <button class="theme-panel-close" onclick="closeThemePanel()">✕</button>
+    </div>
+    <div class="theme-options-list">
+        <div class="theme-option-item" id="opt-void" onclick="setTheme('void')">
+            <div class="theme-option-info"><span>◐</span> VOID</div>
+            <div class="theme-check">✓</div>
+        </div>
+        <div class="theme-option-item" id="opt-midnight" onclick="setTheme('midnight')">
+            <div class="theme-option-info"><span>◑</span> MIDNIGHT</div>
+            <div class="theme-check">✓</div>
+        </div>
+        <div class="theme-option-item" id="opt-neon" onclick="setTheme('neon')">
+            <div class="theme-option-info"><span>✦</span> NEON</div>
+            <div class="theme-check">✓</div>
+        </div>
+        <div class="theme-option-item" id="opt-stealth" onclick="setTheme('stealth')">
+            <div class="theme-option-info"><span>◇</span> STEALTH</div>
+            <div class="theme-check">✓</div>
+        </div>
+        <div class="theme-option-item" id="opt-light" onclick="setTheme('light')">
+            <div class="theme-option-info"><span>☼</span> LIGHT</div>
+            <div class="theme-check">✓</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openTelegram(){ window.location.href = "https://t.me/Voidxevra"; }
+function openSite(url){ window.location.href = url; }
+
+// Loader Logic
+(function() {
+    const loader = document.getElementById("loader");
+    const developerPopup = document.getElementById("developerPopup");
+
+    if (sessionStorage.getItem("appLoaded")) {
+        if (loader) loader.style.display = "none";
+        if (developerPopup) developerPopup.style.display = "none";
+        return;
+    }
+
+    let isLoaderDone = false;
+    function hideLoader() {
+        if (isLoaderDone) return;
+        isLoaderDone = true;
+        sessionStorage.setItem("appLoaded", "true");
+        if (loader) {
+            loader.classList.add("hide");
+            setTimeout(function() { loader.style.display = "none"; }, 350);
+        }
+        if (developerPopup) {
+            developerPopup.classList.remove("hide");
+            setTimeout(function() { developerPopup.classList.add("hide"); }, 2500);
+        }
+    }
+
+    let progress = 0;
+    const loaderProgress = document.getElementById("loaderProgress");
+    const loaderPercent = document.getElementById("loaderPercent");
+
+    const timer = setInterval(function() {
+        progress += 10;
+        if (progress > 100) progress = 100;
+        if (loaderProgress) loaderProgress.style.width = progress + "%";
+        if (loaderPercent) loaderPercent.innerText = progress + "%";
+        if (progress >= 100) {
+            clearInterval(timer);
+            hideLoader();
+        }
+    }, 25);
+
+    setTimeout(hideLoader, 1500);
+})();
+
+// Search Platforms Logic
+function searchPlatforms(){
+    const input = document.getElementById("searchInput").value.toUpperCase().trim();
+    const cards = document.querySelectorAll(".platform-card");
+    let found = 0;
+
+    cards.forEach(function(card){
+        const name = (card.getAttribute("data-name") || "").toUpperCase();
+        if(name.includes(input)){
+            card.style.display = "flex";
+            found++;
+        } else {
+            card.style.display = "none";
+        }
+    });
+
+    const noRes = document.getElementById("noResult");
+    if(noRes) noRes.style.display = found === 0 ? "block" : "none";
+}
+
+// Theme Panel & Persistence Logic
+function openThemePanel() {
+    document.getElementById("themeOverlay").classList.add("active");
+    document.getElementById("themePanel").classList.add("active");
+}
+
+function closeThemePanel() {
+    document.getElementById("themeOverlay").classList.remove("active");
+    document.getElementById("themePanel").classList.remove("active");
+}
+
+function setTheme(themeName) {
+    const body = document.body;
+    body.classList.remove("theme-void", "theme-midnight", "theme-neon", "theme-stealth", "theme-light");
+    body.classList.add("theme-" + themeName);
+    localStorage.setItem("void_study_theme", themeName);
+
+    document.querySelectorAll(".theme-option-item").forEach(item => {
+        item.classList.remove("selected");
+    });
+    const selectedOpt = document.getElementById("opt-" + themeName);
+    if(selectedOpt) selectedOpt.classList.add("selected");
+
+    closeThemePanel();
+}
+
+// Load saved theme on startup
+(function() {
+    const savedTheme = localStorage.getItem("void_study_theme") || "void";
+    document.body.classList.remove("theme-void", "theme-midnight", "theme-neon", "theme-stealth", "theme-light");
+    document.body.classList.add("theme-" + savedTheme);
+    window.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".theme-option-item").forEach(item => {
+            item.classList.remove("selected");
+        });
+        const selectedOpt = document.getElementById("opt-" + savedTheme);
+        if(selectedOpt) selectedOpt.classList.add("selected");
+    });
+})();
+</script>
+</body>
+</html>
