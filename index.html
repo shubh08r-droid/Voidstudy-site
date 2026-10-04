@@ -7,7 +7,7 @@
 
 <script>
 if (sessionStorage.getItem("appLoaded")) {
-    document.write("<style>#loader, #developerPopup { display: none !important; opacity: 0 !important; visibility: hidden !important; }</style>");
+    document.write("<style>#loader { display: none !important; opacity: 0 !important; visibility: hidden !important; }</style>");
 }
 </script>
 
@@ -42,25 +42,131 @@ body.theme-light {
 }
 
 html, body{ width:100%; min-height:100%; }
-body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:var(--text); overflow-x:hidden; transition: background 0.3s ease, color 0.3s ease; }
+body{ font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: var(--bg); color:var(--text); overflow-x:hidden; transition: background 0.3s ease, color 0.3s ease; }
 
-#loader{ position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center; flex-direction:column; background: radial-gradient(circle at 50% 40%, rgba(0,180,255,.2), transparent 40%), #030a12; transition: opacity .35s ease, visibility .35s ease; }
-#loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-.loader-logo-box{ width:185px; height:185px; position:relative; display:flex; align-items:center; justify-content:center; animation: loaderFloat 2.8s ease-in-out infinite; }
-.loader-logo-box::after{ content:""; position:absolute; bottom:-18px; width:120px; height:17px; border-radius:50%; background: rgba(0,210,255,.4); filter:blur(12px); animation: loaderShadow 2.8s ease-in-out infinite; }
-.loader-logo{ width:170px; height:170px; object-fit:contain; border-radius:34px; filter: drop-shadow(0 15px 30px rgba(0,180,255,.35)); }
-.loader-title{ margin-top:30px; font-size:43px; font-weight:900; letter-spacing:-2px; color:white; }
-.loader-title span{ color:#00d2ff; }
-.loader-author{ margin-top:12px; color:#d9e5f3; font-size:18px; }
-.loader-author b{ color:#00d2ff; }
-.loader-loading{ margin-top:60px; font-size:16px; letter-spacing:7px; color:#8fb2d4; }
-.loader-bar{ width:72%; max-width:390px; height:15px; margin-top:20px; border-radius:30px; background:#0d1c2c; border:1px solid #1a3854; overflow:hidden; }
-.loader-progress{ width:0%; height:100%; border-radius:30px; background: linear-gradient(90deg, #0072ff, #00d2ff); box-shadow: 0 0 18px rgba(0,210,255,.8); transition: width 0.05s linear; }
-.loader-percent{ margin-top:13px; font-size:18px; font-weight:bold; color:#a8c8e6; }
-.loader-tagline{ margin-top:65px; font-size:12px; letter-spacing:5px; color:#7894ad; }
-@keyframes loaderFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-14px); } }
-@keyframes loaderShadow{ 0%,100%{ transform:scaleX(1); opacity:.7; } 50%{ transform:scaleX(.65); opacity:.3; } }
-<style>
+/* === AURORA HALO LOADER SCREEN === */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: radial-gradient(circle at 50% 45%, #08101d 0%, #020307 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: bgPulse 6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+
+#loader.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-logo-wrapper {
+    position: relative;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader-logo-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.45) 0%, rgba(0, 114, 255, 0) 70%);
+    border-radius: 50%;
+    animation: glowPulse 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+    z-index: 0;
+    will-change: transform, opacity;
+}
+
+.loader-logo-img {
+    position: relative;
+    z-index: 1;
+    width: 165px;
+    height: 165px;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 25px rgba(0, 114, 255, 0.45));
+    animation: floatAndRotate 4s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
+    will-change: transform, filter;
+}
+
+.loader-main-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    text-align: center;
+    text-transform: uppercase;
+    animation: textFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.loader-main-title span {
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #38bdf8 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
+    animation: shineText 4s ease-in-out infinite;
+}
+
+.loader-sub-tag {
+    font-size: 13.5px;
+    color: #64748b;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    animation: textFadeIn 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.loader-sub-tag .author-name {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.moai-emoji {
+    display: inline-block;
+    animation: bounceEmoji 2.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+
+@keyframes floatAndRotate {
+    0% { transform: translate3d(0, -6px, 0) rotate(-1deg) scale(0.98); filter: drop-shadow(0 0 15px rgba(0, 114, 255, 0.3)); }
+    100% { transform: translate3d(0, 6px, 0) rotate(1deg) scale(1.02); filter: drop-shadow(0 0 32px rgba(56, 189, 248, 0.65)); }
+}
+
+@keyframes glowPulse {
+    0% { transform: scale(0.85); opacity: 0.35; }
+    100% { transform: scale(1.2); opacity: 0.85; }
+}
+
+@keyframes bgPulse {
+    0% { background: radial-gradient(circle at 50% 45%, #08101d 0%, #020307 70%); }
+    100% { background: radial-gradient(circle at 50% 45%, #0c182b 0%, #020307 75%); }
+}
+
+@keyframes shineText {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes textFadeIn {
+    from { opacity: 0; transform: translate3d(0, 12px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes bounceEmoji {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, -3px, 0); }
+}
+
 #app{ width:100%; min-height:100vh; padding-bottom:40px; }
 .header{ width:100%; padding: 22px 18px 20px; display:flex; align-items:center; justify-content:space-between; background: linear-gradient(180deg, rgba(0,210,255,.12) 0%, transparent 100%), var(--bg); position:relative; z-index:100; }
 .brand{ display:flex; align-items:center; gap:12px; }
@@ -69,7 +175,6 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
 .brand-text h1 span{ color:var(--blue); }
 .brand-text p{ margin-top:7px; font-size:12px; font-weight:bold; letter-spacing:2px; color:var(--blue); }
 
-/* Void Orb Theme Button & Panel Styles */
 .theme-orb-btn { width:52px; height:52px; border-radius:17px; border: 1px solid var(--border); background: radial-gradient(circle, var(--card2), var(--card)); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:24px; cursor:pointer; box-shadow: 0 8px 25px var(--shadow), 0 0 15px rgba(0,210,255,.2); position: relative; }
 
 .theme-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 9998; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
@@ -111,24 +216,17 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
 .platform-name{ font-size:18px; font-weight:900; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .platform-sub{ margin-top:8px; font-size:14px; color:var(--muted); }
 .open-btn{ width:52px; height:52px; flex-shrink:0; border-radius:50%; border: 1px solid rgba(0,210,255,0.35); background: radial-gradient(circle, rgba(0,210,255,0.2), rgba(0,114,255,0.05)); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:27px; box-shadow: 0 0 15px rgba(0,210,255,.2); }
-.developer{ position:fixed; left:50%; bottom:30px; transform:translateX(-50%); z-index:5000; height:46px; padding:0 20px; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:28px; background: radial-gradient(circle at 50% 50%, #102235, #0a1420); border:1px solid var(--border); font-size:13px; font-weight:900; letter-spacing:1px; cursor:pointer; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
-.developer.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-.developer-label{ color:var(--muted); } .developer-emoji{ font-size:18px; } .developer-name{ color:var(--blue); }
 .no-result{ display:none; text-align:center; padding:40px 10px; color:var(--muted); font-size:15px; }
 </style>
 </head>
 <body class="theme-void">
 
 <div id="loader">
-    <div class="loader-logo-box">
-        <img src="https://plain-apac-prod-public.komododecks.com/202610/02/ogLL3orM29pZQIfX9Jm6/image.png" class="loader-logo" alt="VOID STUDY">
+    <div class="loader-logo-wrapper">
+        <img class="loader-logo-img" src="https://plain-apac-prod-public.komododecks.com/202610/02/ogLL3orM29pZQIfX9Jm6/image.png" alt="VOID STUDY Logo">
     </div>
-    <div class="loader-title">VOID <span>STUDY</span></div>
-    <div class="loader-author">by <b>Shubh🗿</b></div>
-    <div class="loader-loading">LOADING...</div>
-    <div class="loader-bar"><div class="loader-progress" id="loaderProgress"></div></div>
-    <div class="loader-percent" id="loaderPercent">0%</div>
-    <div class="loader-tagline">STUDY • LEARN • GROW</div>
+    <div class="loader-main-title">VOID <span>STUDY</span></div>
+    <div class="loader-sub-tag">by <span class="author-name">Shubh</span> <span class="moai-emoji">🗿</span></div>
 </div>
 
 <div id="app">
@@ -151,7 +249,6 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
         </div>
 
         <div class="banner-dot"></div>
-
         <div class="hub-badge">ULTRA PLATFORM HUB</div>
 
         <div class="search-box">
@@ -161,6 +258,72 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
 
         <div class="section-title">EXPLORE PLATFORM HUB</div>
         <div class="platform-list" id="platformList">
+            <div class="platform-card" data-name="KHAN GLOBAL STUDIES KGS V2" onclick="openSite('https://kgs.spidyuniverse.in')">
+                <img class="platform-logo" src="https://i.ibb.co/m5rjgZ9C/952c9b771b53d250535bbd1b9a31f138.jpg" alt="KGS V2">
+                <div class="platform-info"><div class="platform-name">KHAN GLOBAL STUDIES [KGS] V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PW ULTRA" onclick="openSite('https://vidyaversee-pw.vercel.app')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/Iqqafsl7OSuEpPoxiLwi/image.jpg" alt="PW ULTRA">
+                <div class="platform-info"><div class="platform-name">PW ULTRA</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="RAKSHA ACADEMY" onclick="openSite('https://raksha.codewithvivek.qzz.io')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/cAI2XKP0F7G5flOGDsPw/image.png" alt="RAKSHA ACADEMY">
+                <div class="platform-info"><div class="platform-name">RAKSHA ACADEMY</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="ROJGAR WITH ANKIT RWA V2" onclick="openSite('https://rwa.streamfiles.eu.org/#all')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/kQONsl9Fb6NBjkTs9bgC/image.jpg" alt="RWA V2">
+                <div class="platform-info"><div class="platform-name">ROJGAR WITH ANKIT [RWA] V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="NEXT TOPPER" onclick="openSite('https://nt.streamfiles.eu.org')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/ZcDTnMHWYyqpEafovvRa/image.png" alt="NEXT TOPPER">
+                <div class="platform-info"><div class="platform-name">NEXT TOPPER</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="NEXT TOPPER V2" onclick="openSite('https://nexthope.pages.dev/nt')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/kwSMTUMeJ77HVLHxwOK5/image.jpg" alt="NEXT TOPPER V2">
+                <div class="platform-info"><div class="platform-name">NEXT TOPPER V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="VIBRANT ACADEMY" onclick="openSite('https://studypanda.live/vibrant')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/2yEr6xXLnzGqyUQKayi9/image.jpg" alt="VIBRANT ACADEMY">
+                <div class="platform-info"><div class="platform-name">VIBRANT ACADEMY</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="PADHLE AKSHAY" onclick="openSite('https://trms-akshay.nextmate.site/home')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/hcc6wS9dSwmuubFQLdip/image.png" alt="PADHLE AKSHAY">
+                <div class="platform-info"><div class="platform-name">PADHLE AKSHAY</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="TARGET BOARD" onclick="openSite('https://tb.nexthope.site/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/v5GSoTLwFU6tcFkfQgM2/image.png" alt="TARGET BOARD">
+                <div class="platform-info"><div class="platform-name">TARGET BOARD</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="TARGET BOARD V3" onclick="openSite('https://studyapkmod-targetboard.vercel.app/')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/v5GSoTLwFU6tcFkfQgM2/image.png" alt="TARGET BOARD V3">
+                <div class="platform-info"><div class="platform-name">TARGET BOARD V3</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
+            <div class="platform-card" data-name="IIT SCHOOL" onclick="openSite('https://others.streamfiles.eu.org/iit')">
+                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/04/loEfhna9z9n6nRib4ZJa/image.png" alt="IIT SCHOOL">
+                <div class="platform-info"><div class="platform-name">IIT SCHOOL</div><div class="platform-sub">STUDY PLATFORM</div></div>
+                <div class="open-btn">→</div>
+            </div>
+
             <div class="platform-card" data-name="KD LIVE" onclick="openSite('https://kd-live.netlify.app/')">
                 <img class="platform-logo" src="https://i.ibb.co/G4NGbBDF/dfb58a9616e725b1d52dd3cff7154f7f-fgraphic.png" alt="KD LIVE">
                 <div class="platform-info"><div class="platform-name">KD LIVE</div><div class="platform-sub">STUDY PLATFORM</div></div>
@@ -170,12 +333,6 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
             <div class="platform-card" data-name="PHYSICS WALLAH" onclick="openSite('https://pw.deltaverse.site/study')">
                 <img class="platform-logo" src="https://i.ibb.co/p6xQJn1f/images.png" alt="PHYSICS WALLAH">
                 <div class="platform-info"><div class="platform-name">PHYSICS WALLAH</div><div class="platform-sub">STUDY PLATFORM</div></div>
-                <div class="open-btn">→</div>
-            </div>
-
-            <div class="platform-card" data-name="KHAN GLOBAL STUDIES KGS" onclick="openSite('https://darkuniversekgs.vercel.app/')">
-                <img class="platform-logo" src="https://i.ibb.co/m5rjgZ9C/952c9b771b53d250535bbd1b9a31f138.jpg" alt="KGS">
-                <div class="platform-info"><div class="platform-name">KHAN GLOBAL STUDIES [KGS]</div><div class="platform-sub">STUDY PLATFORM</div></div>
                 <div class="open-btn">→</div>
             </div>
 
@@ -200,12 +357,6 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
             <div class="platform-card" data-name="SELECTION WAY" onclick="openSite('https://nexthope.pages.dev/sw/')">
                 <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/jLuOq8IKzpQTiR9Uo3Fy/image.jpg" alt="SELECTION WAY">
                 <div class="platform-info"><div class="platform-name">SELECTION WAY</div><div class="platform-sub">STUDY PLATFORM</div></div>
-                <div class="open-btn">→</div>
-            </div>
-
-            <div class="platform-card" data-name="TARGET BOARD" onclick="openSite('https://studyapkmod-targetboard.vercel.app/index.html')">
-                <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/H8mbx38R4MSBcqaY4GAU/image.png" alt="TARGET BOARD">
-                <div class="platform-info"><div class="platform-name">TARGET BOARD</div><div class="platform-sub">STUDY PLATFORM</div></div>
                 <div class="open-btn">→</div>
             </div>
 
@@ -238,8 +389,7 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
                 <div class="platform-info"><div class="platform-name">TESTBOOK</div><div class="platform-sub">STUDY PLATFORM</div></div>
                 <div class="open-btn">→</div>
             </div>
-
-            <div class="platform-card" data-name="PW BOOK" onclick="openSite('https://books.streamfiles.eu.org/')">
+                        <div class="platform-card" data-name="PW BOOK" onclick="openSite('https://books.streamfiles.eu.org/')">
                 <img class="platform-logo" src="https://i.ibb.co/BVn1cdk7/images-2.png" alt="PW BOOK">
                 <div class="platform-info"><div class="platform-name">PW BOOK</div><div class="platform-sub">BOOKS & STUDY</div></div>
                 <div class="open-btn">→</div>
@@ -347,13 +497,7 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
                 <div class="open-btn">→</div>
             </div>
 
-            <div class="platform-card" data-name="KHAN GLOBAL STUDIES KGS V2" onclick="openSite('https://vidyaverse-kgs.vercel.app/')">
-                <img class="platform-logo" src="https://i.ibb.co/m5rjgZ9C/952c9b771b53d250535bbd1b9a31f138.jpg" alt="KGS V2">
-                <div class="platform-info"><div class="platform-name">KHAN GLOBAL STUDIES [KGS] V2</div><div class="platform-sub">STUDY PLATFORM</div></div>
-                <div class="open-btn">→</div>
-            </div>
-
-            <div class="platform-card" data-name="STUDY IQ" onclick="openSite('https://studyiqspidy.vercel.app/')">
+            <div class="platform-card" data-name="STUDY IQ" onclick="openSite('https://spidyiq.vercel.app')">
                 <img class="platform-logo" src="https://plain-apac-prod-public.komododecks.com/202610/01/MWFAPrWiLKsNbAI0LIxn/image.png" alt="STUDY IQ">
                 <div class="platform-info"><div class="platform-name">STUDY IQ</div><div class="platform-sub">STUDY PLATFORM</div></div>
                 <div class="open-btn">→</div>
@@ -391,11 +535,6 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
         </div>
         <div class="no-result" id="noResult">No platform found 🔎</div>
     </main>
-      <div class="developer hide" id="developerPopup" onclick="openTelegram()">
-        <span class="developer-label">DEVELOPER</span>
-        <span class="developer-emoji">🗿</span>
-        <span class="developer-name">SHUBH</span>
-    </div>
 </div>
 <!-- Theme Selection Bottom Sheet Panel -->
 <div class="theme-overlay" id="themeOverlay" onclick="closeThemePanel()"></div>
@@ -432,48 +571,22 @@ body{ font-family: Arial, Helvetica, sans-serif; background: var(--bg); color:va
 function openTelegram(){ window.location.href = "https://t.me/Voidxevra"; }
 function openSite(url){ window.location.href = url; }
 
-// Loader Logic
+// Smooth Aurora Loader Timeout Logic
 (function() {
     const loader = document.getElementById("loader");
-    const developerPopup = document.getElementById("developerPopup");
 
     if (sessionStorage.getItem("appLoaded")) {
         if (loader) loader.style.display = "none";
-        if (developerPopup) developerPopup.style.display = "none";
         return;
     }
 
-    let isLoaderDone = false;
-    function hideLoader() {
-        if (isLoaderDone) return;
-        isLoaderDone = true;
-        sessionStorage.setItem("appLoaded", "true");
+    setTimeout(() => {
         if (loader) {
             loader.classList.add("hide");
-            setTimeout(function() { loader.style.display = "none"; }, 350);
+            sessionStorage.setItem("appLoaded", "true");
+            setTimeout(() => { loader.style.display = "none"; }, 800);
         }
-        if (developerPopup) {
-            developerPopup.classList.remove("hide");
-            setTimeout(function() { developerPopup.classList.add("hide"); }, 2500);
-        }
-    }
-
-    let progress = 0;
-    const loaderProgress = document.getElementById("loaderProgress");
-    const loaderPercent = document.getElementById("loaderPercent");
-
-    const timer = setInterval(function() {
-        progress += 10;
-        if (progress > 100) progress = 100;
-        if (loaderProgress) loaderProgress.style.width = progress + "%";
-        if (loaderPercent) loaderPercent.innerText = progress + "%";
-        if (progress >= 100) {
-            clearInterval(timer);
-            hideLoader();
-        }
-    }, 25);
-
-    setTimeout(hideLoader, 1500);
+    }, 2800);
 })();
 
 // Search Platforms Logic
@@ -496,7 +609,7 @@ function searchPlatforms(){
     if(noRes) noRes.style.display = found === 0 ? "block" : "none";
 }
 
-// Theme Panel & Persistence Logic
+// Theme Panel Logic
 function openThemePanel() {
     document.getElementById("themeOverlay").classList.add("active");
     document.getElementById("themePanel").classList.add("active");
